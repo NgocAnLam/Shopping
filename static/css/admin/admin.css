@@ -1,0 +1,53 @@
+#adminPage {
+    background-color: #f4f5fa;
+}
+
+#sideBar {
+    background-color: #000000;
+    width: 15vw;
+    height: auto;
+}
+
+#sideBar .menuItems {
+    padding: 10px;
+    margin: 1px 10px;
+    background-color: #000000;
+    border: none;
+    color: #ffffff;
+    text-align: left;
+    width: 100%;
+}
+
+
+#sideBar .menuItems:hover {
+    background-color: #191434;
+    color: #7960fc;
+}
+
+#content {
+    width: 85vw;
+    height: 100vh;
+    background-color: #f4f5fa;
+}
+
+/* .btnConfirmProcessing {
+    width: fit-content;
+    text-align: center;
+    color: #ffffff;
+    background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 10px;
+    margin-right: 30px;
+}
+
+.btnConfirmTransit {
+    width: fit-content;
+    text-align: center;
+    color: #ffffff;
+    background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 10px;
+    margin-right: 30px;
+} */

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>User</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/web/user.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-row">
+        <div id="accountSideBar">
+            {% for item in sideBar %}
+                {% if item[0] == title %}
+                    <a href='http://127.0.0.1:5000/user/{{item[1]}}'><button class="btnAccountSideBarSelected">{{item[0]}}</button></a>
+                {% else %}
+                    <a href='http://127.0.0.1:5000/user/{{item[1]}}'><button class="btnAccountSideBar">{{item[0]}}</button></a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div id="accountContent">
+
+            {% if title == 'Thông tin tài khoản' %}
+                <h4>Thông tin cá nhân</h4>
+                <div class="d-flex flex-row">
+                    <p class="titleContent">Họ và tên: </p>
+                    <p class="valueContent">{{user.username}}</p>
+                </div>
+                <div class="d-flex flex-row">
+                    <p class="titleContent">Email: </p>
+                    <p class="valueContent">{{user.email}}</p>
+                </div>
+                <div class="d-flex flex-row">
+                    <p class="titleContent">Số điện thoại: </p>
+                    <p class="valueContent">{{user.phone}}</p>
+                </div>
+                <div class="d-flex flex-row">
+                    <p class="titleContent">Địa chỉ: </p>
+                    <p class="valueContent">{{user.address}}</p>
+                </div>
+                <div class="d-flex flex-row">
+                    <p class="titleContent">Thời gian tạo tài khoản: </p>
+                    <p class="valueContent">{{user.createdTime}}</p>
+                </div>
+                <div class="d-flex flex-row">
+                    <p class="titleContent">Thời gian đăng nhập gần nhất: </p>
+                    <p class="valueContent">{{user.loginTime}}</p>
+                </div>
+
+            {% elif title == 'Đơn hàng đã giao' %}
+                <h4>Đơn hàng đang đã giao</h4>
+                {% for order in orderList %}
+                    <div>
+                        <p style="margin-left: 20px; margin-bottom: 0px;" class="orderID">Order ID: {{order['orderID']}}</p>
+                        <p style="margin-left: 20px; margin-bottom: 0px;"> Buy time: {{order['buyTime']}}</p> 
+                        <p style="margin-left: 20px; margin-bottom: 0px;"> Processed time: {{order['processedTime']}}</p>
+                        <p style="margin-left: 20px; margin-bottom: 0px;"> Transited time: {{order['transitedTime']}}</p>
+                    </div>
+                    
+                    <table style="margin: 10px 20px;">
+                        <tr>
+                            <th style="padding: 10px; width: 50px">id</th>
+                            <th style="padding: 10px; width: 600px">name</th>
+                            <th style="padding: 10px; width: 200px">brand</th>
+                            <th style="padding: 10px; width: 150px">price</th>
+                            <th style="padding: 10px; width: 100px">quantity</th>
+                            <th style="padding: 10px; width: 150px">total</th>
+                        </tr>
+                        {% for detail in order['detail'] %}
+                            <tr>
+                                <td style="padding: 10px;">
+                                    <a href="http://127.0.0.1:5000/{{detail['url']}}">
+                                        {{detail['id']}}
+                                    </a>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <a href="http://127.0.0.1:5000/{{detail['url']}}">
+                                        {{detail['name']}}
+                                    </a>
+                                </td>
+                                <td style="padding: 10px;">{{detail['brand']}}</td>
+                                <td style="padding: 10px;" class="price">{{detail['price']}}</td>
+                                <td style="padding: 10px;">{{detail['quantity']}}</td>
+                                <td style="padding: 10px;" class="price">{{detail['total']}}</td>
+                            </tr>             
+                        {% endfor %}
+                    </table>
+                    <br>
+                {% endfor %}
+            {% elif title == 'Đơn hàng đang xử lý' %}  
+                <h4>Đơn hàng đang xử lý</h4>
+                {% for order in orderList %}
+                    <div>
+                        <p style="margin-left: 20px; margin-bottom: 0px;" class="orderID">Order ID: {{order['orderID']}}</p>
+                        <p style="margin-left: 20px; margin-bottom: 0px;"> Buy time: {{order['buyTime']}}</p>  
+                    </div>
+                    
+                    <table style="margin: 10px 20px;">
+                        <tr>
+                            <th style="padding: 10px; width: 50px">id</th>
+                            <th style="padding: 10px; width: 600px">name</th>
+                            <th style="padding: 10px; width: 200px">brand</th>
+                            <th style="padding: 10px; width: 150px">price</th>
+                            <th style="padding: 10px; width: 100px">quantity</th>
+                            <th style="padding: 10px; width: 150px">total</th>
+                        </tr>
+                        {% for detail in order['detail'] %}
+                            <tr>
+                                <td style="padding: 10px;">
+                                    <a href="http://127.0.0.1:5000/{{detail['url']}}">
+                                        {{detail['id']}}
+                                    </a>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <a href="http://127.0.0.1:5000/{{detail['url']}}">
+                                        {{detail['name']}}
+                                    </a>
+                                </td>
+                                <td style="padding: 10px;">{{detail['brand']}}</td>
+                                <td style="padding: 10px;" class="price">{{detail['price']}}</td>
+                                <td style="padding: 10px;">{{detail['quantity']}}</td>
+                                <td style="padding: 10px;" class="price">{{detail['total']}}</td>
+                            </tr>             
+                        {% endfor %}
+                    </table>
+                    <br>
+                {% endfor %}
+
+            {% elif title == 'Đơn hàng đang vận chuyển' %}  
+                <h4>Đơn hàng đang vận chuyển</h4>
+                {% for order in orderList %}
+                    <div>
+                        <p style="margin-left: 20px; margin-bottom: 0px;" class="orderID">Order ID: {{order['orderID']}}</p>
+                        <p style="margin-left: 20px; margin-bottom: 0px;"> Buy time: {{order['buyTime']}}</p> 
+                        <p style="margin-left: 20px; margin-bottom: 0px;"> Processed time: {{order['processedTime']}}</p>  
+                    </div>
+                    
+                    <table style="margin: 10px 20px;">
+                        <tr>
+                            <th style="padding: 10px; width: 50px">id</th>
+                            <th style="padding: 10px; width: 600px">name</th>
+                            <th style="padding: 10px; width: 200px">brand</th>
+                            <th style="padding: 10px; width: 150px">price</th>
+                            <th style="padding: 10px; width: 100px">quantity</th>
+                            <th style="padding: 10px; width: 150px">total</th>
+                        </tr>
+                        {% for detail in order['detail'] %}
+                            <tr>
+                                <td style="padding: 10px;">
+                                    <a href="http://127.0.0.1:5000/{{detail['url']}}">
+                                        {{detail['id']}}
+                                    </a>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <a href="http://127.0.0.1:5000/{{detail['url']}}">
+                                        {{detail['name']}}
+                                    </a>
+                                </td>
+                                <td style="padding: 10px;">{{detail['brand']}}</td>
+                                <td style="padding: 10px;" class="price">{{detail['price']}}</td>
+                                <td style="padding: 10px;">{{detail['quantity']}}</td>
+                                <td style="padding: 10px;" class="price">{{detail['total']}}</td>
+                            </tr>             
+                        {% endfor %}
+                    </table>
+                    <br>
+                {% endfor %}
+            {% endif %}
+
+        </div>   
+    </div>
+
+    <script src="{{ url_for('static', filename='js/web/user.js') }}"></script>
+{% endblock %}

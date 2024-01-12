@@ -1,0 +1,50 @@
+{% extends 'base_admin.html' %}
+
+{% block head %}
+    <title>Transit Orders</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/admin/transit.css') }}"/>
+{% endblock %}
+
+
+{% block content %} 
+    <h1 style="margin: 20px; padding: 5px;">Transit</h1>
+    {% for order in info %}
+        <div class="d-flex flex-row">
+            <div style="width: 30%;">
+                <p style="margin-left: 20px; margin-bottom: 0px;" class="orderID">Order ID: {{order['orderID']}}</p>
+                <p style="margin-left: 20px; margin-bottom: 0px;"> Buy time: {{order['buyTime']}}</p>
+                <p style="margin-left: 20px; margin-bottom: 0px;"> Processed time: {{order['processedTime']}}</p>
+                <p style="margin-left: 20px; margin-bottom: 0px;">Total number of items: {{order['detail']|length}}</p>      
+            </div>
+            <div style="width: 60%;">
+                <p style="margin-left: 20px; margin-bottom: 0px;" class="infoCustomer">User ID: {{order['userID']}}</p>
+                <p style="margin-left: 20px; margin-bottom: 0px;">Addres: {{order['address']}}</p>
+                <p style="margin-left: 20px; margin-bottom: 0px;">Email: {{order['email']}} - Phone: {{order['phone']}}</p>
+            </div>
+            <button style="width: fit-content; height: 30px;" class="btnConfirmTransit">Confirm</button>
+        </div>
+        
+        <table style="margin: 10px 20px;">
+            <tr>
+                <th style="padding: 10px; width: 50px">id</th>
+                <th style="padding: 10px; width: 600px">name</th>
+                <th style="padding: 10px; width: 200px">brand</th>
+                <th style="padding: 10px; width: 150px">price</th>
+                <th style="padding: 10px; width: 100px">quantity</th>
+                <th style="padding: 10px; width: 150px">total</th>
+            </tr>
+            {% for detail in order['detail'] %}
+                <tr>
+                    <td style="padding: 10px;">{{detail['id']}}</td>
+                    <td style="padding: 10px;">{{detail['name']}}</td>
+                    <td style="padding: 10px;">{{detail['brand']}}</td>
+                    <td style="padding: 10px;" class="price">{{detail['price']}}</td>
+                    <td style="padding: 10px;">{{detail['quantity']}}</td>
+                    <td style="padding: 10px;" class="price">{{detail['total']}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <br>
+    {% endfor %}
+    <script src="{{ url_for('static', filename='js/admin/transit.js') }}"></script>
+{% endblock %}

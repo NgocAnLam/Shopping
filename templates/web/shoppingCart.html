@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/web/shoppingCart.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-row">
+        <div id="shoppingCart">
+            <h4>Giỏ hàng</h4><br>
+            <div>
+                <div class="d-flex flex-row">
+                    <input class="checkBoxAll" type="checkbox" style="margin-right: 500px;">
+                    <p style="margin-right: 90px; padding-left: 20px;">Đơn giá</p>
+                    <p style="margin-right: 90px;">Số lượng</p>
+                    <p style="margin-right: 40px; padding-left: 20px;">Thành tiền</p>
+                    <button class="removeAll">Xoá</button>
+                </div>
+                <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+
+                <div>
+                    {% if items %}
+                        {% for item in items %}
+                            <div class="d-flex flex-row">
+                                <input class="checkBoxShoppingCart" type="checkbox">
+                                <a href={{item.url}} class="d-flex flex-row linkProduct" style="text-decoration:none">
+                                    <img class="imgShoppingCart" src={{item.image}}>
+                                    <p class="itemNameShoppingCart">{{item.name}} - {{item.id}}</p>
+                                </a>
+                                
+                                <p class="itemPriceShoppingCart">{{item.price}}đ</p>
+                                <div style="max-width: 190px; min-width: 190px;">
+                                    <button id="minusShoppingCart" class="btnQuantityShoppingCart btnMinusProd">-</button>
+                                    <button id="quantityShoppingCart" class="btnQuantityShoppingCart btnQuantityProd" style="width: 60px;">{{item.quantity}}</button>
+                                    <button id="plusShoppingCart" class="btnQuantityShoppingCart btnPlusProd" style="margin-right: 60px;">+</button>
+                                </div>
+                                <p class="calculatePriceShoppingCart">{{item.total}}₫</p>
+                                <button class="removeItem">Xoá</button>
+                            </div>
+                            <hr style="width:100%; text-align:left; margin-left:0">
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div style="width: 30%; height: auto;">
+            <div id="infoCustomer"></div>
+            <div id="payMent">
+                <h4>Tổng tiền</h4>
+                <p id="totalPrice">0đ</p>
+            </div>
+
+            <div><button id="btnBuy">Mua hàng</button></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/web/shoppingCart.js') }}"></script>
+{% endblock %}

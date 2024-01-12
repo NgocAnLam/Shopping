@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Search</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/web/search.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div style="margin: 10px 0px 10px 20px;">
+        <p style="font-size: 20px;" id="infoSearch">Kết quả tìm kiếm "{{keyword}}" - Đã tìm thấy {{quantityKeyword}} kết quả.</p>
+    </div>
+
+    <div id="content" class="d-flex flex-row" style="flex-wrap: wrap; padding-left: 20px;">
+        {% for item in data %}    
+            <div class="cardProduct">
+                <a href="../{{item.urlKey}}">
+                    <div class="d-flex flex-row">
+                        <img class="imageProduct" src="{{item.image}}" alt="{{item.name}}">
+                        <div class="infoProduct">
+                            <div class="d-flex flex-row">
+                                <div class="price">{{item.price}}</div>
+                                <div class="discount">-{{item.discountRate}}%</div>
+                            </div>
+                            
+                            <div class="nameProduct">{{item.name}}</div>
+
+                            <div class="d-flex flex-row">
+                                {% if item.rating > 0 %}
+                                    <div>Đánh giá: {{item.rating}}</div>
+                                    <div style="margin: 0px 10px;">|</div>
+                                {% endif %}
+
+                                {% if item.quantity > 0 %}
+                                    <div>Đã bán: {{item.quantity}}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>                                      
+            </div>  
+        {% endfor %}
+    </div> 
+
+    <div id="page" class="page" style="display: flex; justify-content: center; margin: 20px;">
+        {% for page in paging.description %}
+            {% if page == paging.current_page %}
+                <button class="btn btn-primary btnPage" style="margin: 10px; background-color:#0b74e5;" onclick="changePage(this)">{{ page }}</button>
+            {% elif page == '...' %}
+                <button class="btn btnPage" style="margin: 10px; background-color:#f5f5fa;" disabled>{{ page }}</button>
+            {% else %}
+                <button class="btn btnPage" style="margin: 10px; background-color:#f5f5fa;" onclick="changePage(this)">{{ page }}</button>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/web/search.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,18 @@
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.price {
+    text-align: right;
+}
+
+.menuItemsChild {
+    padding: 10px;
+    margin: 1px 10px 1px 40px;
+    background-color: #000000;
+    border: none;
+    color: #ffffff;
+    text-align: left;
+    width: 100%;
+}

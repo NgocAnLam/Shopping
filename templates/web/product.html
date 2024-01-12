@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Product</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/web/product.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <div class="d-flex flex-row">
+            <div class="divImageProduct">
+                <div><img class="imageProduct" src={{items.thumbnail_url}}></div>
+                {% if items.detail %}
+                    <div>          
+                        <h5 style="margin: 20px;">Đặc điểm nổi bật</h5>
+                        <ul>
+                            {% for item in items.detail[0]['highlight']['items'] %}
+                                <li style="margin-right: 20px; ">{{item}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="divInfoProduct">
+                <!-- Tên sp -->
+                <div class="divDetailProduct">
+                    <h3>{{items.name}}</h3>
+                    <p>Thương hiệu: {{items.brand_name}} | Đánh giá: {{items.rating_average}} ({{items.review_count}}) | Đã bán {{items.quantity_sold}}</p>
+                    <div class="d-flex flex-row">
+                        <h6 id="itemPrice" style="font-size: 30px; font-weight: bold;">{{items.price}}đ</h6>
+                        <p style="margin-left: 30px; background-color: #f5f5fa;">-{{items.discount_rate}}%</p>
+                    </div>
+                </div>                
+
+                <!-- Thanh toán -->
+                <div class="divPaymentProduct">
+                    <div class="d-flex flex-row" style="margin-bottom: 10px;">
+                        <h5 style="margin-right: 40px;">Số lượng</h5>
+                        <div style="margin-right: 40px ;">
+                            <button id="minus" class="btnQuantityProduct">-</button>
+                            <button id="quantity" class="btnQuantityProduct" style="width: 50px;">1</button>
+                            <button id="plus" class="btnQuantityProduct">+</button>
+                        </div>
+                        <h5 style="margin-right: 40px ;">Tạm tính</h5>
+                        <h5 id="calculatePrice"></h5>
+                    </div>
+
+                    <div class="d-flex flex-row">
+                        <button id="btnBuyNow" style="width: 50%; margin-right: 10px;">Mua ngay</button>
+                        <button id="btnAddToCart" style="width: 50%;">Thêm vào giỏ hàng</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="commentProduct" style="width: 100%;">
+            <div class="generalComment">
+                <h4>Đánh giá sản phẩm</h4>
+                <div class="d-flex flex-row">
+                    <div>Đánh giá: {{items.rating_average}}</div>
+                    <div style="margin: 0px 10px;">|</div>
+                    <div>Số lượt đánh giá: {{items.review_count}}</div>
+                </div>
+                <hr />
+            </div>
+            
+            <div class="d-flex flex-row writeComment">
+                <div id="infoUser"></div>
+                <input type="text" id="writeUser">
+                <button class="btnRating" id="minusRating">-</button>
+                <button class="btnRating" id="scoreRating" style="min-width: 60px;">5</button>
+                <button class="btnRating" id="plusRating" style="margin-right: 30px;">+</button>
+                <button id="postUser">Đăng</button>
+                <hr /><br><br>
+            </div>
+
+            <div class="showComment"></div>
+        </div>
+
+        <div id="similarProduct" class="d-flex flex-row"></div>
+
+        <div class="specificationsProduct">
+            {% if items.detail %}
+                <h4>Thông tin chi tiết</h4>
+                <div>   
+                    {% for item in items.detail[0]['specifications'][0]['attributes'] %}
+                        <div class="d-flex flex-row align-items-center">
+                            <p style="min-width: 250px; margin: 5px 0px 5px 0px;">{{item.name}}</p>
+                            <p style="margin: 5px 0px 5px 0px;">{{item.value}}</p>    
+                        </div>
+                        <hr width="100%" size="1px" align="center" style="margin: 0px;"/>
+                    {% endfor %}
+                </div>    
+            {% endif %}       
+        </div>
+
+        <div class="descriptionProduct">
+            {% if items.detail %}
+                <h4>Mô tả sản phẩm</h4>
+                <div id="divDescription">{{items.detail[0]['description']}}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/web/product.js') }}"></script>
+{% endblock %}
