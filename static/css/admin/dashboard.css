@@ -1,0 +1,48 @@
+.divTotal {
+    width: 170px;
+    height: 100px;
+    padding: 10px;
+    margin-right: 20px;
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.titleTotal {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    height: auto;
+}
+
+.numTotal {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#myChart { 
+    padding: 20px; 
+    background-color: #f8f4e9; 
+    border-radius: 10px;
+    
+}
+
+.optionTimeChart {
+    background-color: #fefefe;
+    border-radius: 10%;
+    width: 80px;
+    height: 30px;
+    font-size: 13px;
+    text-align: center;
+    margin: 0px 0px 10px 5px;
+    padding: 5px;
+    border: 1px solid #ffffff;
+}
+
+.selected {
+    background-color: lightblue;
+}

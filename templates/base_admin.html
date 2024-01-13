@@ -11,10 +11,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/admin/admin.css') }}"/>
     {% block head %}{% endblock %}
 </head>
-<body>
+<body style="font-family: cursive;">
     <div id="adminPage" class="d-flex flex-row">
         <div id="sideBar">
-            <button class="menuItems" id="dashboard_sidebar">Dashboard</button>
+            <button class="menuItems" id="dashboard_sidebar" style="margin-top: 30px;">Dashboard</button>
             {% block dashboard %}{% endblock %}
             <button class="menuItems" id="customer_sidebar">Customers</button>
             {% if type != "showAll" %}
