@@ -19,9 +19,12 @@ function numberWithoutDots(number) {
 itemPrice.textContent = numberWithDots(itemPrice.textContent);
 calculatePrice.textContent = itemPrice.textContent;
 
-divDescription.textContent = divDescription.textContent.replace(new RegExp('width="750"', 'g'), 'width="100%"')
-divDescription.textContent = divDescription.textContent.replace(/height="\d+"/g, 'height="auto"');
-divDescription.innerHTML = divDescription.textContent;
+if (divDescription){
+    divDescription.textContent = divDescription.textContent.replace(new RegExp('width="750"', 'g'), 'width="100%"')
+    divDescription.textContent = divDescription.textContent.replace(/height="\d+"/g, 'height="auto"');
+    divDescription.innerHTML = divDescription.textContent;
+}
+
 
 // add event handlers
 btnMinus.addEventListener("click", function() {
@@ -70,6 +73,7 @@ btnAddToCart.addEventListener("click", function() {
 
 
 var infoUser = document.getElementById('infoUser');
+
 fetch("http://127.0.0.1:5000/info")
 .then(response => response.json())
 .then(data => {
@@ -95,22 +99,93 @@ plusRating.onclick = function () {
     if (score < 5){scoreRating.textContent = score + 1}
 }
 
-postUser.onclick = function () {
-    fetch("http://127.0.0.1:5000/commentUser", {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            textComment: writeUser.value,
-            scoreComment: scoreRating.textContent,
-            timeComment: getDateTime()
-        })
-    })
+fetch("http://127.0.0.1:5000/info")
     .then(response => response.json())
     .then(data => {
-        console.log(data)
+        var email = data['email'];
+        if (email == null){postUser.disabled = true;}
+        else {postUser.disabled = false}
+    })
+    .catch(error => {console.error('GET request error:', error)});
+    
+postUser.onclick = function () {
+    fetch("http://127.0.0.1:5000/info")
+    .then(response => response.json())
+    .then(data => {
+        var email = data['email'];
+        var username = data['username'];
+        var productID = window.location.pathname.split('-p').slice(-1)[0];
+
+        fetch("http://127.0.0.1:5000/comment/" + productID, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                comment: writeUser.value,
+                score: scoreRating.textContent,
+                email: email,
+                username: username,
+                type: 'add'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {window.location.reload()})
+        .catch(error => {console.error('GET request error:', error)});
     })
     .catch(error => {console.error('GET request error:', error)});
 }
+
+
+var showComment = document.getElementById('showComment');
+var product_id = window.location.pathname.split('-p').slice(-1)[0];
+
+fetch("http://127.0.0.1:5000/comment/" + product_id)
+.then(response => response.json())
+.then(data => {
+    console.log(data);
+    var comment = data['comments'];
+    showComment.innerHTML = '';
+
+    for (var i = 0; i < comment.length; i++) {
+        var divComment = document.createElement('div');
+        divComment.className = 'd-flex flex-row';
+        divComment.style.margin = '10px';
+
+        var username = document.createElement('div');
+        username.textContent = comment[i]['username'];
+        username.style.minWidth = '150px';
+        username.style.maxWidth = '150px';
+        divComment.appendChild(username);
+
+        var commentText = document.createElement('div');
+        commentText.textContent = comment[i]['comment'];
+        commentText.style.minWidth = '600px';
+        commentText.style.maxWidth = '600px';
+        divComment.appendChild(commentText);
+
+        var score = document.createElement('div');
+        score.textContent = comment[i]['score'] + ' sao';
+        score.style.minWidth = '100px';
+        score.style.maxWidth = '100px';
+        divComment.appendChild(score);
+
+        var comment_date = document.createElement('div');
+        var comment_time = comment[i]['time'];
+        var originalDate = new Date(comment_time);
+        var date = originalDate.getDate().toString().padStart(2, '0');
+        var month = (originalDate.getMonth() + 1).toString().padStart(2, '0');
+        var year = originalDate.getFullYear();
+        var hour = originalDate.getHours().toString().padStart(2, '0');
+        var minute = originalDate.getMinutes().toString().padStart(2, '0');
+        var second = originalDate.getSeconds().toString().padStart(2, '0');
+        comment_date.textContent = `${date}-${month}-${year} ${hour}:${minute}:${second}`;
+        divComment.appendChild(comment_date);
+
+        showComment.appendChild(divComment);
+    }
+})
+.catch(error => {console.error('GET request error:', error)});
+
+
 
 function getDateTime(){
     var currentDate = new Date();
@@ -125,24 +200,9 @@ function getDateTime(){
     return Time;
 }
 
-
-  
-//   div.scrollmenu a {
-//     display: inline-block;
-//     color: white;
-//     text-align: center;
-//     padding: 14px;
-//     text-decoration: none;
-//   }
-  
-//   div.scrollmenu a:hover {
-//     background-color: #777;
-//   }
-
-
 var similarProduct = document.getElementById('similarProduct');
 var productID = window.location.pathname.split('-').slice(-1);
-console.log(productID);
+
 fetch("http://127.0.0.1:5000/similar_product/" + window.location.pathname.split('-p').slice(-1))
 .then(response => response.json())
 .then(data => {

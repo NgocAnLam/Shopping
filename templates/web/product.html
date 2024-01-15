@@ -7,15 +7,15 @@
 
 {% block body %}
     <div class="container">
-
         <div class="d-flex flex-row">
             <div class="divImageProduct">
-                <div><img class="imageProduct" src={{items.thumbnail_url}}></div>
-                {% if items.detail %}
+                <div><img class="imageProduct" src={{product.thumbnail_url}}></div>
+
+                {% if detail != None %}
                     <div>          
                         <h5 style="margin: 20px;">Đặc điểm nổi bật</h5>
                         <ul>
-                            {% for item in items.detail[0]['highlight']['items'] %}
+                            {% for item in detail['highlight']['items'] %}
                                 <li style="margin-right: 20px; ">{{item}}</li>
                             {% endfor %}
                         </ul>
@@ -26,11 +26,11 @@
             <div class="divInfoProduct">
                 <!-- Tên sp -->
                 <div class="divDetailProduct">
-                    <h3>{{items.name}}</h3>
-                    <p>Thương hiệu: {{items.brand_name}} | Đánh giá: {{items.rating_average}} ({{items.review_count}}) | Đã bán {{items.quantity_sold}}</p>
+                    <h3>{{product.name}}</h3>
+                    <p>Thương hiệu: {{product.brand_name}} | Đánh giá: {{product.rating_average}} ({{product.review_count}}) | Đã bán {{product.quantity_sold}}</p>
                     <div class="d-flex flex-row">
-                        <h6 id="itemPrice" style="font-size: 30px; font-weight: bold;">{{items.price}}đ</h6>
-                        <p style="margin-left: 30px; background-color: #f5f5fa;">-{{items.discount_rate}}%</p>
+                        <h6 id="itemPrice" style="font-size: 30px; font-weight: bold;">{{product.price}}đ</h6>
+                        <p style="margin-left: 30px; background-color: #f5f5fa;">-{{product.discount_rate}}%</p>
                     </div>
                 </div>                
 
@@ -60,9 +60,9 @@
             <div class="generalComment">
                 <h4>Đánh giá sản phẩm</h4>
                 <div class="d-flex flex-row">
-                    <div>Đánh giá: {{items.rating_average}}</div>
+                    <div>Đánh giá: {{product.rating_average}}</div>
                     <div style="margin: 0px 10px;">|</div>
-                    <div>Số lượt đánh giá: {{items.review_count}}</div>
+                    <div>Số lượt đánh giá: {{product.review_count}}</div>
                 </div>
                 <hr />
             </div>
@@ -77,32 +77,33 @@
                 <hr /><br><br>
             </div>
 
-            <div class="showComment"></div>
+            <div id="showComment"></div>
         </div>
 
         <div id="similarProduct" class="d-flex flex-row"></div>
+        
+        {% if detail != None %}
+            <div class="specificationsProduct">
+                    <h4>Thông tin chi tiết</h4>
+                    <div>
+                        {% for item in detail['specifications'][0]['attributes'] %}
+                            <div class="d-flex flex-row align-items-center">
+                                <p style="min-width: 250px; margin: 5px 0px 5px 0px;">{{ item.name }}</p>
+                                <p style="margin: 5px 0px 5px 0px;">{{ item.value }}</p>
+                            </div>
+                            <hr width="100%" size="1px" align="center" style="margin: 0px;"/>
+                        {% endfor %}
+                    </div>
+            </div>
+        {% endif %}
 
-        <div class="specificationsProduct">
-            {% if items.detail %}
-                <h4>Thông tin chi tiết</h4>
-                <div>   
-                    {% for item in items.detail[0]['specifications'][0]['attributes'] %}
-                        <div class="d-flex flex-row align-items-center">
-                            <p style="min-width: 250px; margin: 5px 0px 5px 0px;">{{item.name}}</p>
-                            <p style="margin: 5px 0px 5px 0px;">{{item.value}}</p>    
-                        </div>
-                        <hr width="100%" size="1px" align="center" style="margin: 0px;"/>
-                    {% endfor %}
-                </div>    
-            {% endif %}       
-        </div>
+        {% if detail != None %}
+            <div class="descriptionProduct">
+                    <h4>Mô tả sản phẩm</h4>
+                    <div id="divDescription">{{detail['description']}}</div>
+            </div>
+        {% endif %}
 
-        <div class="descriptionProduct">
-            {% if items.detail %}
-                <h4>Mô tả sản phẩm</h4>
-                <div id="divDescription">{{items.detail[0]['description']}}</div>
-            {% endif %}
-        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/web/product.js') }}"></script>

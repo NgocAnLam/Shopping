@@ -1,17 +1,16 @@
 import calendar
 import math
-from bson import ObjectId
-from flask import Flask, request, jsonify, session, render_template, redirect, url_for
-from pymongo import MongoClient
-from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
-import hashlib
-import base64
-from datetime import datetime, timedelta
 import random
 import asyncio
 import telegram
 import configparser
+import hashlib
+import base64
+from bson import ObjectId
+from flask import Flask, request, jsonify, session, render_template, redirect, url_for
+from pymongo import MongoClient
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from unidecode import unidecode
@@ -25,6 +24,7 @@ accountDB = db["Account"]
 categoryDB = db["Category"]
 productDB = db["Product"]
 adminDB = db["Admin"]
+commentDB = db["Comment"]
 
 
 # -- Read config file -----------------------------------------------------
@@ -887,8 +887,18 @@ def filterCategory(category):
 
 @app.route("/<urlKeyProduct>", methods=["GET"])
 def getProduct(urlKeyProduct):
-    items = productDB.find_one({"url_key": urlKeyProduct}, {"_id": 0})
-    return render_template("web/product.html", items=items)
+    product = [productDB.find_one({"url_key": urlKeyProduct}, {"_id": 0})]
+
+    try: 
+        detail = product[0]['detail'][0]
+    except:
+        detail = None
+    
+    return render_template(
+        "web/product.html", 
+        product = product[0], 
+        detail = detail
+    )
 
 
 @app.route("/shoppingCart", methods=["GET", "POST", "DELETE"])
@@ -1221,41 +1231,52 @@ def calculate(originList, nameProduct, lenOriginList):
     return score
 
 
-@app.route("/commentUser", methods=["GET", "POST"])
-def commentUser():
+@app.route("/comment/<int:product_id>", methods=["GET", "POST"])
+def commentUser(product_id):
     if request.method == "GET":
-        pass
+        comments = commentDB.find({'product_id': product_id}, {'_id': 0}).sort("time", -1).limit(5)
+        return jsonify({"success": True, "comments": list(comments)})
+    
     if request.method == "POST":
-        try:
-            data = request.get_json()
-            text_comment = data["textComment"]
-            score_comment = int(data["scoreComment"])
-            time_comment = data["timeComment"]
+        data = request.get_json()
+        type = data["type"]
+        email = data["email"]
 
-            comments = []
-            comments.append(
-                {
-                    "textComment": text_comment,
-                    "scoreComment": score_comment,
-                    "timeComment": time_comment,
+        print(email)
+
+        if email == None:
+            return redirect(url_for("login"))
+        
+        else:           
+
+            if type == "add":
+                comment = data["comment"]
+                score = int(data["score"])
+                email = data["email"]
+                username = data["username"]
+                
+                data = {
+                    "comment": comment,
+                    "score": score,
+                    "time": datetime.now(),
+                    "email": email,
+                    "username": username,
+                    "product_id": product_id
                 }
-            )
 
-            accountDB.update_one(
-                {"_id": user["_id"]}, {"$set": {"LoginTime": datetime.now()}}
-            )
+                commentDB.insert_one(data)
+                product = productDB.find_one({'id': product_id}, {'_id': 0})
+                product['review_count'] += 1
+                product['rating_average'] = round((product['rating_average'] * (product['review_count'] - 1) + score) / product['review_count'], 1)
+                productDB.update_one({'id': product_id}, {"$set": product})
+                del data['_id']
 
-            return jsonify(
-                {
-                    "success": True,
-                    "message": "Comment added successfully",
-                    "comments": comments,
-                }
-            )
+                return jsonify({"success": True, "message": "Comment added successfully", "data": data})
 
-        except Exception as e:
-            return jsonify({"success": False, "message": str(e)})
-
+            elif type == "remove":
+                pass
+            else:
+                pass
 
 @app.route("/similar_product/<product_id>", methods=["GET", "POST"])
 def getSimilarProduct(product_id):
