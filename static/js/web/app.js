@@ -188,7 +188,7 @@ function logout(){
 function login(){
     if (btnLogin){
         btnLogin.addEventListener('click', function() {
-            window.location.href = "http://127.0.0.1:5000/login";
+            window.location.href = "http://127.0.0.1:5000/login"
         });
     }
 }
@@ -229,3 +229,11 @@ btnSearch.onclick = function search(){
         window.location.href = "http://127.0.0.1:5000/search?q=" + inputValue;
     }
 }
+
+fetch("http://127.0.0.1:5000/info")
+.then(response => response.json())
+.then(data => {
+    var infoUser = document.getElementById('infoUser');
+    if (infoUser){infoUser.textContent = data.username}
+})
+.catch(error => {console.error('GET request error:', error)});

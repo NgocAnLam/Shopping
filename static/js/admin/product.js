@@ -183,7 +183,6 @@ if (searchUpdate){
                 input.value = valueData;
                 value.append(input);
                 tr.appendChild(value);
-            
                 table.appendChild(tr);
             }
     

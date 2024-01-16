@@ -44,44 +44,43 @@ btnPlus.addEventListener("click", function() {
 });
 
 btnAddToCart.addEventListener("click", function() {
-    var divNotificationAddToCart = document.createElement("div");
-    divNotificationAddToCart.id = "notificationAddToCart";
-    divNotificationAddToCart.textContent = "Đã thêm vào giỏ hàng";
-    divNotificationAddToCart.style.marginTop = "30px";
-    divNotificationAddToCart.style.padding = "20px";
-    divNotificationAddToCart.style.width = "300px";
-    divNotificationAddToCart.style.height = "fit-content";
-    divNotificationAddToCart.style.backgroundColor = "#81cf8c";
-    btnAddToCart.appendChild(divNotificationAddToCart);
-    setTimeout(function (){btnAddToCart.removeChild(divNotificationAddToCart)}, 3000);
-
-    var pathnameURL = (window.location.pathname).split('-');
-    var productID = pathnameURL[pathnameURL.length - 1].slice(1);
-
-    fetch("http://127.0.0.1:5000/shoppingCart", {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            id: productID, 
-            quantity: divQuantityProduct.textContent,
-        })
-    })
+    fetch("http://127.0.0.1:5000/info")
     .then(response => response.json())
-    .then(data => {console.log(data)})
+    .then(data => {
+        if (data['isLogin'] == true){
+            var notiAddToCart = document.createElement("div");
+            notiAddToCart.id = "notiAddToCart";
+            notiAddToCart.textContent = "Đã thêm vào giỏ hàng";
+            btnAddToCart.appendChild(notiAddToCart);
+            setTimeout(function (){btnAddToCart.removeChild(notiAddToCart)}, 3000);
+
+            var pathnameURL = (window.location.pathname).split('-');
+            var productID = pathnameURL[pathnameURL.length - 1].slice(1);
+
+            fetch("http://127.0.0.1:5000/shoppingCart", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    id: productID, 
+                    quantity: divQuantityProduct.textContent,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {console.log(data)})
+            .catch(error => {console.error('GET request error:', error)});
+        }
+        else {window.location.href = "http://127.0.0.1:5000/login";}
+    })
     .catch(error => {console.error('GET request error:', error)});
+
+
+
+    
+   
+    
+
+    
 });
-
-
-var infoUser = document.getElementById('infoUser');
-
-fetch("http://127.0.0.1:5000/info")
-.then(response => response.json())
-.then(data => {
-    console.log(data);
-    infoUser.textContent = data.username;
-})
-.catch(error => {console.error('GET request error:', error)});
-
 
 var minusRating = document.getElementById('minusRating');
 var plusRating = document.getElementById('plusRating');
@@ -89,49 +88,55 @@ var scoreRating = document.getElementById('scoreRating');
 var postUser = document.getElementById('postUser');
 var writeUser = document.getElementById('writeUser');
 
-minusRating.onclick = function () {
-    score = parseInt(scoreRating.textContent);
-    if (score > 1){scoreRating.textContent =  score - 1}
+if (minusRating){
+    minusRating.onclick = function () {
+        score = parseInt(scoreRating.textContent);
+        if (score > 1){scoreRating.textContent =  score - 1}
+    }
 }
 
-plusRating.onclick = function () {
-    score = parseInt(scoreRating.textContent);
-    if (score < 5){scoreRating.textContent = score + 1}
+if (plusRating){
+    plusRating.onclick = function () {
+        score = parseInt(scoreRating.textContent);
+        if (score < 5){scoreRating.textContent = score + 1}
+    }
 }
 
 fetch("http://127.0.0.1:5000/info")
     .then(response => response.json())
     .then(data => {
         var email = data['email'];
-        if (email == null){postUser.disabled = true;}
-        else {postUser.disabled = false}
+        if (email == null && postUser){postUser.disabled = true;}
+        if (email != null && postUser) {postUser.disabled = false}
     })
     .catch(error => {console.error('GET request error:', error)});
-    
-postUser.onclick = function () {
-    fetch("http://127.0.0.1:5000/info")
-    .then(response => response.json())
-    .then(data => {
-        var email = data['email'];
-        var username = data['username'];
-        var productID = window.location.pathname.split('-p').slice(-1)[0];
 
-        fetch("http://127.0.0.1:5000/comment/" + productID, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                comment: writeUser.value,
-                score: scoreRating.textContent,
-                email: email,
-                username: username,
-                type: 'add'
-            })
-        })
+if (postUser){
+    postUser.onclick = function () {
+        fetch("http://127.0.0.1:5000/info")
         .then(response => response.json())
-        .then(data => {window.location.reload()})
+        .then(data => {
+            var email = data['email'];
+            var username = data['username'];
+            var productID = window.location.pathname.split('-p').slice(-1)[0];
+    
+            fetch("http://127.0.0.1:5000/comment/" + productID, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    comment: writeUser.value,
+                    score: scoreRating.textContent,
+                    email: email,
+                    username: username,
+                    type: 'add'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {window.location.reload()})
+            .catch(error => {console.error('GET request error:', error)});
+        })
         .catch(error => {console.error('GET request error:', error)});
-    })
-    .catch(error => {console.error('GET request error:', error)});
+    }    
 }
 
 
@@ -141,7 +146,6 @@ var product_id = window.location.pathname.split('-p').slice(-1)[0];
 fetch("http://127.0.0.1:5000/comment/" + product_id)
 .then(response => response.json())
 .then(data => {
-    console.log(data);
     var comment = data['comments'];
     showComment.innerHTML = '';
 
@@ -206,40 +210,26 @@ var productID = window.location.pathname.split('-').slice(-1);
 fetch("http://127.0.0.1:5000/similar_product/" + window.location.pathname.split('-p').slice(-1))
 .then(response => response.json())
 .then(data => {
-    console.log(data);
     similarProduct.innerHTML = '';
     similarProduct.style.margin = '20px 10px';
     similarProduct.style.width = '100%';
 
-
-    for (var i=0; i<data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
         var divProduct = document.createElement('div');
         divProduct.className = 'card';
-        divProduct.style.margin = '10px 10px 10px 0px';
-        divProduct.style.padding = '10px';
-        divProduct.style.width = '300px';
-        divProduct.style.height = '500px';
-        divProduct.style.borderRadius = '10px';
-
+        
         var link = document.createElement('a');
         link.href = 'http://127.0.0.1:5000/' + data[i]['urlKey']
 
         var image = document.createElement('img');
         image.className = "card-img";
         image.src = data[i]['imgUrl'];
-        image.width = "200px";
-        image.height = "300";
 
         var cardBody = document.createElement('div');
         cardBody.className = "card-body";
 
         var title = document.createElement('p');
         title.className = "card-title";
-        title.style.width = "100%";
-        title.style.height = "50px";
-        title.style.overflow = "hidden";
-        title.style.whiteSpace = "wrap";
-        title.style.textOverflow = "ellipsis";
         title.textContent = data[i]['name'];
 
         cardBody.appendChild(title);
@@ -254,7 +244,6 @@ fetch("http://127.0.0.1:5000/similar_product/" + window.location.pathname.split(
         var price = document.createElement('p');
         price.className = "card-price";
         price.textContent = numberWithDots(data[i]['price']) + 'đ';
-        price.style.marginRight = "50px";
         evaluate_price_discount.appendChild(price);
 
         var discount = document.createElement('p');
@@ -270,7 +259,6 @@ fetch("http://127.0.0.1:5000/similar_product/" + window.location.pathname.split(
         var star = document.createElement('p');
         star.className = "star";
         star.textContent = 'Đánh giá: ' + data[i]['rating'];
-        star.style.marginRight = "30px";
         evaluate_star_quantity.appendChild(star);
 
         var quantity = document.createElement('p');

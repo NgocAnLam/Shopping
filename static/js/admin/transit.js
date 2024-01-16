@@ -17,15 +17,12 @@ for (var i = 0; i < btnConfirmTransit.length; i++){
         return function() {
             var orderIDPost = orderIDList[index].textContent.split(" ")[2];
             var customerIDPost = customerIDList[index].textContent.split(" ")[2];          
-            fetch("http://127.0.0.1:5000/admin/order/transit/" + customerIDPost + '/' + orderIDPost, {
+            fetch("http://127.0.0.1:5000/admin/transit/" + customerIDPost + '/' + orderIDPost, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
             })
             .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                location.reload();
-            })
+            .then(data => {location.reload()})
             .catch(error => {console.error('GET request error:', error)});
         };
     })(i));
