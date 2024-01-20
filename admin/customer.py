@@ -12,11 +12,17 @@ def get_customer_list():
     option = request.args.get("option")
 
     if id == None and option == None:
-        user = accountDB.find({}, {"_id": 0, "ID": 1, "email": 1, "username": 1, "phone": 1, "address": 1, "level": 1})
+        user = accountDB.find(
+            {}, 
+            {"_id": 0, "ID": 1, "email": 1, "username": 1, "phone": 1, "address": 1, "level": 1}
+        )
         return render_template("admin/customer.html", user=list(user), type="showAll")
 
     elif id != None and option == None:
-        user = accountDB.find({"ID": id}, {"_id": 0})
+        user = accountDB.find(
+            {"ID": id}, 
+            {"_id": 0, "password": 0, "commentList": 0, "shoppingCart": 0}
+        )
         return render_template("admin/customer.html", user=list(user), type="info")
 
     else:
@@ -30,7 +36,10 @@ def get_customer_list():
             user = accountDB.find({"ID": id}, {"_id": 0, "orderList": 1})
             type = "confirm"
         else:
-            user = accountDB.find({"ID": id}, {"_id": 0})
+            user = accountDB.find(
+                {"ID": id}, 
+                {"_id": 0, "password": 0, "commentList": 0, "shoppingCart": 0}
+            )
             type = "info"
 
         return render_template("admin/customer.html", user=list(user), type=type)

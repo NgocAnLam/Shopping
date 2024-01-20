@@ -1,0 +1,52 @@
+#title {
+    font-size: 30px;
+    font-weight: bold;
+    padding: 20px;
+    margin: 20px;
+}
+
+#brand, #price, #rating {
+    font-size: 20px;
+    margin: 10px 20px;
+    padding: 5px 20px;
+}
+
+
+#username {
+    text-align: center;
+    width: 200px;
+    height: fit-content;
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+}
+
+#input {
+    width: 600px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px;
+}
+
+
+.changeScore, #score, #btnPostComment {
+    text-align: center;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    width: 50px;
+    padding: 10px;
+    margin: 20px 5px;
+}
+
+#score {
+    width: 70px;
+}
+
+
+#btnPostComment{
+    width: fit-content;
+    padding: 10px;
+    margin: 20px;
+}

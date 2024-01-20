@@ -2,12 +2,89 @@
 
 {% block head %}
     <title>Shopping</title>
+    
 {% endblock %}
 
 {% block body %}
     <div class="d-flex flex-row">
         <div id="sidebar" class="category"></div>
-        <div id="content"></div>    
+        <div id="content">
+            <div id="bestQuantity" class="d-flex flex-row">
+                {% for item in data_quantity %}
+                    <div class="card" style="width: 300px; margin: 0px 5px;">
+                        <a href=../{{item.url_key}}>
+                            <img class="card-img" src={{item.thumbnail_url}}>
+                            <div class="card-body">
+                                <p class="card-title ellipsis">{{item.name}}</p>
+                                <div class="d-flex flex-column evaluate">
+                                    <div class="d-flex flex-row">
+                                        <p class="card-price">{{'{:,}'.format(item.price).replace(',', '.')}}đ</p>
+                                        <p class="card-discount">
+                                            {% if item.discount_rate != null and item.discount_rate != 0 %}
+                                                -{{item.discount_rate}}%
+                                            {% endif %}
+                                        </p>
+                                    </div>
+
+                                    <div class="d-flex flex-row">
+                                        <p class="star">
+                                            {% if item.rating_average != 0 %}
+                                                Đánh giá: {{item.rating_average}}
+                                            {% endif %}
+                                        </p>
+                                        <p class="quantity">
+                                            {% if item.quantity_sold != null %}
+                                                Đã bán: {{item.quantity_sold}}
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="bestDiscount" class="d-flex flex-row">
+                {% for item in data_discount %}
+                    <div class="card" style="width: 300px; margin: 0px 5px;">
+                        <a href=../{{item.url_key}}>
+                            <img class="card-img" src={{item.thumbnail_url}}>
+                            <div class="card-body">
+                                <p class="card-title ellipsis">{{item.name}}</p>
+                                <div class="d-flex flex-column evaluate">
+                                    <div class="d-flex flex-row">
+                                        <p class="card-price" style="margin-right: 20px">
+                                            {{'{:,}'.format(item.price).replace(',', '.')}}đ
+                                        </p>
+                                        <p class="card-discount">
+                                            {% if item.discount_rate != null and item.discount_rate != 0 %}
+                                                -{{item.discount_rate}}%
+                                            {% endif %}
+                                        </p>
+                                    </div>
+
+                                    <div class="d-flex flex-row">
+                                        <p class="star">
+                                            {% if item.rating_average != 0 %}
+                                                Đánh giá: {{item.rating_average}}
+                                            {% endif %}
+                                        </p>
+                                        <p class="quantity">
+                                            {% if item.quantity_sold != null %}
+                                                Đã bán: {{item.quantity_sold}}
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>    
     </div>
 {% endblock %}
+
+
     

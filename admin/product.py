@@ -27,23 +27,18 @@ def addProduct():
         original_price = int(data.get("original_price"))
         thumbnail_url = data.get("thumbnail_url")
         category = int(data.get("category"))
+        url_key = convert_to_slug(name) + "-p" + str(random.randint(1, 99999999))
+        discount_rate = int(100 - (price / original_price * 100))
+        id = random.randint(1, 99999999)
 
-        productDB.insert_one({
-            "id": id,
-            "spid": id,
-            "name": name,
-            "url_key": convert_to_slug(name) + "-p" + str(random.randint(1, 99999999)),
-            "brand_name": brand_name,
-            "price": price,
-            "original_price": original_price,
-            "discount": original_price - price,
-            "discount_rate": int(100 - (price / original_price * 100)),
-            "rating_average": 0,
-            "review_count": 0,
-            "thumbnail_url": thumbnail_url,
-            "quantity_sold": 0,
-            "category": category,
-        })
+        data = {
+            "id": id, "spid": id, "name": name, "url_key": url_key, "brand_name": brand_name,
+            "price": price, "original_price": original_price, "discount": original_price - price,
+            "discount_rate": discount_rate, "rating_average": 0,"review_count": 0, 
+            "thumbnail_url": thumbnail_url, "quantity_sold": 0, "category": category
+        }
+        
+        productDB.insert_one(data)
         return jsonify({"success": True})
 
 

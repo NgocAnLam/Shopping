@@ -117,6 +117,9 @@ def buyItems():
     if request.method == "POST":
         data = request.get_json()
         info = data.get("info")
+
+        print(info)
+
         orderList = {
             "orderID": generate_order_id(),
             "buyTime": datetime.now(),
@@ -126,7 +129,8 @@ def buyItems():
         for item in info:
             productID = int(item.split(" - ")[-1])
             product = accountDB.find_one(
-                {"shoppingCart.id": productID}, {"_id": 0, "shoppingCart.$": 1}
+                {"shoppingCart.id": productID}, 
+                {"_id": 0, "shoppingCart.$": 1}
             )
             product = product["shoppingCart"][0]
 
@@ -149,7 +153,8 @@ def buyItems():
             )
 
         accountDB.update_one(
-            {"_id": ObjectId(userID)}, {"$push": {"orderProcessing": orderList}}
+            {"_id": ObjectId(userID)}, 
+            {"$push": {"orderProcessing": orderList}}
         )
         return jsonify(
             {"message": "Products added to the orderProcessing successfully"}
@@ -159,6 +164,7 @@ def buyItems():
 def generate_order_id():
     order_id = f"{datetime.now().strftime('%Y%m%d%H%M%S')}{'{:06}'.format(random.randint(0,999999))}"
     return order_id
+
 
 
 @web_shopping_cart_bp.route("/processItems", methods=["GET", "POST"])

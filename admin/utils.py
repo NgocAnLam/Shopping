@@ -1,7 +1,7 @@
 import calendar
 from datetime import datetime, timedelta
 
-import unidecode
+from unidecode import unidecode
 
 # -- Admin ----------------------------------------------------------------
 

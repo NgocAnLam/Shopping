@@ -10,7 +10,35 @@ productDB = db["Product"]
 
 @admin_dashboard_bp.route("/")
 def dashboardAdmin():
-    pipelineOrder = [
+    totalRevenue = getRevenue()
+    process, transit, order = getNumofOrders()
+    
+    return render_template(
+        "admin/dashboard.html",
+        totalProducts = productDB.count_documents({}),
+        totalCustomers = accountDB.count_documents({}),
+        totalProcessing = process,
+        totalTransit = transit,
+        totalOrder = order,
+        totalRevenue = totalRevenue,
+    )
+
+
+def getRevenue():
+    resultRevenue = accountDB.aggregate([
+        {"$unwind": "$orderList"},
+        {"$project": {
+            "_id": 0,
+            "revenue": {"$sum": "$orderList.detail.total"},
+        }},
+    ])
+    total = sum(item["revenue"] for item in list(resultRevenue))
+    return total
+    
+def getNumofOrders():
+    process, transit, order = 0, 0, 0
+
+    resultOrder = list(accountDB.aggregate([
         {
             "$project": {
                 "countProcessing": {"$size": "$orderProcessing"},
@@ -24,33 +52,14 @@ def dashboardAdmin():
                 "result": ["$countProcessing", "$countTransit", "$countList"],
             }
         },
-    ]
+    ]))
 
-    pipelineRevenue = [
-        {"$unwind": "$orderList"},
-        {
-            "$project": {
-                "_id": 0,
-                "total_orderList": {"$sum": "$orderList.detail.total"},
-            }
-        },
-    ]
-
-    resultRevenue = list(accountDB.aggregate(pipelineRevenue))
-    totalRevenue = sum(item["total_orderList"] for item in resultRevenue)
-
-    resultOrder = list(accountDB.aggregate(pipelineOrder))
-    countOrder = [sum(pair) for pair in zip(resultOrder[0]["result"], resultOrder[1]["result"])]
-
-    return render_template(
-        "admin/dashboard.html",
-        totalProducts = productDB.count_documents({}),
-        totalCustomers = accountDB.count_documents({}),
-        totalProcessing = countOrder[0],
-        totalTransit = countOrder[1],
-        totalOrder = countOrder[2],
-        totalRevenue = totalRevenue,
-    )
+    for i in resultOrder:
+        process += i['result'][0]
+        transit += i['result'][1]
+        order += i['result'][2]
+    
+    return process, transit, order
 
 
 @admin_dashboard_bp.route("/chartRevenue", methods=["POST"])
@@ -74,6 +83,7 @@ def chartRevenueDay():
         for i in res["orderList"]:
             for detail in i["detail"]:
                 date = str(i["transitedTime"].date())
+                
                 if date in dateList.keys():
                     dateList[date] += detail["total"]
 

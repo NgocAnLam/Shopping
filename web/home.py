@@ -5,10 +5,13 @@ web_home_bp = Blueprint('web_home', __name__)
 
 db = connectDB()
 categoryDB = db["Category"]
+productDB = db["Product"]
 
 @web_home_bp.route("/")
 def home():
-    return render_template("web/home.html")
+    resultQuantity = productDB.find({'category': 1789}, {'_id': 0, 'detail': 0}).sort('quantity_sold', -1).limit(6)
+    resultDiscount = productDB.find({'category': 1789}, {'_id': 0, 'detail': 0}).sort('discount_rate', -1).limit(6)
+    return render_template("web/home.html", data_quantity = list(resultQuantity), data_discount = list(resultDiscount))
 
 @web_home_bp.route("/category")
 def category():

@@ -53,7 +53,7 @@ def signup():
                 "loginTime": None,
             }
         )
-        return redirect(url_for("login"))
+        return redirect(url_for("web.web_account.login"))
 
     return render_template("web/signup.html")
 
@@ -70,12 +70,15 @@ def login():
             session["userName"] = user["username"]
             session["userEmail"] = user["email"]
             accountDB.update_one(
-                {"_id": user["_id"]}, {"$set": {"loginTime": datetime.now()}}
+                {"_id": user["_id"]}, 
+                {"$set": {"loginTime": datetime.now()}}
             )
             return redirect(url_for("web.web_home.home"))
+        
         else:
             return render_template(
-                "web/login.html", error_message="username hoặc password không đúng"
+                "web/login.html", 
+                error_message="username hoặc password không đúng"
             )
 
     return render_template("web/login.html")

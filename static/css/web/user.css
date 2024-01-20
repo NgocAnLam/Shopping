@@ -42,8 +42,11 @@
     padding: 20px;
     margin: 20px;
     border-radius: 10px;
-    background-color: #ffffff;
+    background-color: #ffffff; 
+    overflow-y: scroll;
+    max-height: 85vh;
 }
+
 
 .titleContent {
     min-width: 300px;
@@ -74,6 +77,56 @@ table, th, td {
     border-collapse: collapse;
 }
 
+table {
+    margin: 10px 20px;
+}
+
+th {
+    text-align: center; 
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+}
+
 .price {
     text-align: right;
 }
+
+.btnComment {
+    padding: 5px 10px;
+    text-align: center;
+    background-color: #d4d2d2;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+}
+
+.infoOrder {
+    margin-left: 20px; 
+    margin-bottom: 0px;
+}
+
+.div_comment {
+    width: 60vw;
+    height: auto;
+    background-color: #d4d2d2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+}
+
+.title {
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+.div_info_product {
+    margin: 20px;
+    padding: 20px;
+}
+
+

@@ -71,15 +71,7 @@ btnAddToCart.addEventListener("click", function() {
         }
         else {window.location.href = "http://127.0.0.1:5000/login";}
     })
-    .catch(error => {console.error('GET request error:', error)});
-
-
-
-    
-   
-    
-
-    
+    .catch(error => {console.error('GET request error:', error)}); 
 });
 
 var minusRating = document.getElementById('minusRating');
@@ -103,13 +95,13 @@ if (plusRating){
 }
 
 fetch("http://127.0.0.1:5000/info")
-    .then(response => response.json())
-    .then(data => {
-        var email = data['email'];
-        if (email == null && postUser){postUser.disabled = true;}
-        if (email != null && postUser) {postUser.disabled = false}
-    })
-    .catch(error => {console.error('GET request error:', error)});
+.then(response => response.json())
+.then(data => {
+    var email = data['email'];
+    if (email == null && postUser){postUser.disabled = true;}
+    if (email != null && postUser) {postUser.disabled = false}
+})
+.catch(error => {console.error('GET request error:', error)});
 
 if (postUser){
     postUser.onclick = function () {
@@ -120,7 +112,7 @@ if (postUser){
             var username = data['username'];
             var productID = window.location.pathname.split('-p').slice(-1)[0];
     
-            fetch("http://127.0.0.1:5000/comment/" + productID, {
+            fetch("http://127.0.0.1:5000/getComment/" + productID, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
@@ -143,12 +135,12 @@ if (postUser){
 var showComment = document.getElementById('showComment');
 var product_id = window.location.pathname.split('-p').slice(-1)[0];
 
-fetch("http://127.0.0.1:5000/comment/" + product_id)
+fetch("http://127.0.0.1:5000/getComment/" + product_id)
 .then(response => response.json())
 .then(data => {
     var comment = data['comments'];
     showComment.innerHTML = '';
-
+    console.log(comment);
     for (var i = 0; i < comment.length; i++) {
         var divComment = document.createElement('div');
         divComment.className = 'd-flex flex-row';
@@ -188,7 +180,6 @@ fetch("http://127.0.0.1:5000/comment/" + product_id)
     }
 })
 .catch(error => {console.error('GET request error:', error)});
-
 
 
 function getDateTime(){
@@ -275,3 +266,34 @@ fetch("http://127.0.0.1:5000/similar_product/" + window.location.pathname.split(
     }
 })
 .catch(error => {console.error('GET request error:', error)});
+
+
+var btnBuyNow = document.getElementById('btnBuyNow');
+
+btnBuyNow.addEventListener("click", function() {
+    fetch("http://127.0.0.1:5000/info")
+    .then(response => response.json())
+    .then(data => {
+        if (data['isLogin'] == true) {
+            var product_name = window.location.pathname;
+            var product_id = parseInt(product_name.split('-p')[product_name.split('-p').length - 1]);
+            var quantity = parseInt(document.getElementById('quantity').textContent);
+
+            fetch("http://127.0.0.1:5000/buy_now/" + product_id + "/" + quantity, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                var notiBuyNow = document.createElement("div");
+                notiBuyNow.id = "notiBuyNow";
+                notiBuyNow.textContent = "Đã mua sản phẩm";
+                btnBuyNow.appendChild(notiBuyNow);
+                setTimeout(function (){btnBuyNow.removeChild(notiBuyNow)}, 3000);
+            })
+            .catch(error => {console.error('GET request error:', error)});
+        }
+        else {window.location.href = "http://127.0.0.1:5000/login";}
+    })
+    .catch(error => {console.error('GET request error:', error)}); 
+});

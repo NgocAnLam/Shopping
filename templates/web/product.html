@@ -58,11 +58,13 @@
         <div class="commentProduct" style="width: 100%;">
             <div class="generalComment">
                 <h4>Đánh giá sản phẩm</h4>
+
                 <div class="d-flex flex-row">
                     <div>Đánh giá: {{product.rating_average}}</div>
                     <div style="margin: 0px 10px;">|</div>
                     <div>Số lượt đánh giá: {{product.review_count}}</div>
                 </div>
+                
                 <hr />
             </div>
 
@@ -73,23 +75,23 @@
         
         {% if detail != None %}
             <div class="specificationsProduct">
-                    <h4>Thông tin chi tiết</h4>
-                    <div>
-                        {% for item in detail['specifications'][0]['attributes'] %}
-                            <div class="d-flex flex-row align-items-center">
-                                <p style="min-width: 250px; margin: 5px 0px;">{{ item.name }}</p>
-                                <p style="margin: 5px 0px;">{{ item.value }}</p>
-                            </div>
-                            <hr width="100%" size="1px" align="center" style="margin: 0px;"/>
-                        {% endfor %}
-                    </div>
+                <h4>Thông tin chi tiết</h4>
+                <div>
+                    {% for item in detail['specifications'][0]['attributes'] %}
+                        <div class="d-flex flex-row align-items-center">
+                            <p style="min-width: 250px; margin: 5px 0px;">{{ item.name }}</p>
+                            <p style="margin: 5px 0px;">{{ item.value }}</p>
+                        </div>
+                        <hr width="100%" size="1px" align="center" style="margin: 0px;"/>
+                    {% endfor %}
+                </div>
             </div>
         {% endif %}
 
         {% if detail != None %}
             <div class="descriptionProduct">
-                    <h4>Mô tả sản phẩm</h4>
-                    <div id="divDescription">{{detail['description']}}</div>
+                <h4>Mô tả sản phẩm</h4>
+                <div id="divDescription">{{detail['description']}}</div>
             </div>
         {% endif %}
 
